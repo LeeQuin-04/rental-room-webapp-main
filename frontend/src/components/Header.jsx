@@ -6,6 +6,15 @@ import AuthModel from './AuthModel';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+// [SỬA LỖI 1] Định nghĩa các link điều hướng ở một nơi duy nhất để dễ quản lý
+const navLinks = [
+    { title: 'Nhà trọ, phòng trọ', path: '/nha-tro-phong-tro' },
+    { title: 'Nhà nguyên căn', path: '/nha-nguyen-can' },
+    { title: 'Căn hộ', path: '/can-ho' },
+    { title: 'Video Review', path: '/videos' },
+    { title: 'Liên hệ', path: '/contact' },
+];
+
 const Header = () => {
     const [toggleSideBar, setToggleSideBar] = useState(false);
     const [authModel, setAuthModel] = useState(null);
@@ -91,11 +100,18 @@ const Header = () => {
                             <div className={`absolute top-0 bottom-0 left-0 w-[300px] bg-white z-51 transform transition-transform duration-300 ease-in-out ${toggleSideBar ? 'translate-x-0' : '-translate-x-full'}`} onClick={e => e.stopPropagation()}>
                                 <div className="h-[55px] w-full bg-blue-600 px-4 py-2 flex items-center"><div className="w-10 h-10 cursor-pointer flex items-center justify-center bg-white/15 rounded-md" onClick={() => setToggleSideBar(false)}><FontAwesomeIcon icon={faXmark} className="text-white text-lg" /></div></div>
                                 <ul>
-                                    <li className="p-4 text-gray-700 text-sm border-b border-gray-200 cursor-pointer">Nhà trọ, phòng trọ</li>
-                                    <li className="p-4 text-gray-700 text-sm border-b border-gray-200 cursor-pointer">Nhà nguyên căn</li>
-                                    <li className="p-4 text-gray-700 text-sm border-b border-gray-200 cursor-pointer">Căn hộ</li>
-                                    <li className="p-4 text-gray-700 text-sm border-b border-gray-200 cursor-pointer">Video Review</li>
-                                    <li className="p-4 text-gray-700 text-sm border-b border-gray-200 cursor-pointer">Liên hệ</li>
+                                    {/* [SỬA LỖI 2] Sử dụng NavLink cho sidebar để đồng bộ */}
+                                    {navLinks.map((link) => (
+                                        <li key={link.path}>
+                                            <NavLink 
+                                                to={link.path} 
+                                                className={({ isActive }) => `block p-4 text-gray-700 text-sm border-b border-gray-200 ${isActive ? 'bg-blue-50 text-blue-600 font-semibold' : ''}`}
+                                                onClick={() => setToggleSideBar(false)} // Thêm để tự đóng sidebar khi chọn
+                                            >
+                                                {link.title}
+                                            </NavLink>
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
                         </div>
@@ -107,11 +123,16 @@ const Header = () => {
 
                     <div>
                         <ul className="lg:flex text-gray-800 items-center font-medium text-base lg:text-[15px] 2xl:gap-x-4 gap-x-3 hidden">
-                            <NavLink to="/rental-rooms" className={({ isActive }) => `px-3 py-2 rounded-md ${isActive ? 'text-blue-600 font-semibold' : 'hover:text-blue-600'} transition-colors`}>Nhà trọ, phòng trọ</NavLink>
-                            <NavLink to="/whole-houses" className={({ isActive }) => `px-3 py-2 rounded-md ${isActive ? 'text-blue-600 font-semibold' : 'hover:text-blue-600'} transition-colors`}>Nhà nguyên căn</NavLink>
-                            <NavLink to="/apartments" className={({ isActive }) => `px-3 py-2 rounded-md ${isActive ? 'text-blue-600 font-semibold' : 'hover:text-blue-600'} transition-colors`}>Căn hộ</NavLink>
-                            <NavLink to="/videos" className={({ isActive }) => `px-3 py-2 rounded-md ${isActive ? 'text-blue-600 font-semibold' : 'hover:text-blue-600'} transition-colors`}>Video Review</NavLink>
-                            <NavLink to="/contact" className={({ isActive }) => `px-3 py-2 rounded-md ${isActive ? 'text-blue-600 font-semibold' : 'hover:text-blue-600'} transition-colors`}>Liên hệ</NavLink>
+                            {/* [SỬA LỖI 3] Sử dụng mảng navLinks để tạo menu chính */}
+                            {navLinks.map((link) => (
+                                <NavLink 
+                                    key={link.path}
+                                    to={link.path} 
+                                    className={({ isActive }) => `px-3 py-2 rounded-md ${isActive ? 'text-blue-600 font-semibold' : 'hover:text-blue-600'} transition-colors`}
+                                >
+                                    {link.title}
+                                </NavLink>
+                            ))}
                         </ul>
                     </div>
                 </div>
